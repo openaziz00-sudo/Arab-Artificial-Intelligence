@@ -84,16 +84,17 @@ def main() -> None:
         if source_prompt in seen_source or prompt in existing_prompts:
             continue
         seen_source.add(source_prompt)
+        category = args.category or classify(act, source_prompt)
         title = act if args.category else make_title(act, source_prompt)
         if title.casefold() in existing_titles:
-            title = f"{title} — {act}"
+            category_label = data["categories"].get(category, category)
+            title = f"{title} — {category_label}"
         suffix = 2
         base_title = title
         while title.casefold() in existing_titles:
             title = f"{base_title} ({suffix})"
             suffix += 1
         existing_titles.add(title.casefold())
-        category = args.category or classify(act, source_prompt)
         additions.append({
             "category": category,
             "title": title,
