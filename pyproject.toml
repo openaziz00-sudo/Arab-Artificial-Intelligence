@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "arab-prompts"
+version = "0.1.0"
+description = "Arabic AI prompt catalog with optional local semantic search"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{name = "ai العرب contributors"}]
+license = {file = "LICENSE"}
+keywords = ["arabic", "prompts", "ai", "semantic-search"]
+classifiers = ["Programming Language :: Python :: 3", "License :: OSI Approved :: MIT License"]
+
+[project.optional-dependencies]
+api = ["fastapi>=0.110", "uvicorn[standard]>=0.29"]
+semantic = ["sentence-transformers>=3.0", "numpy>=1.26"]
+all = ["fastapi>=0.110", "uvicorn[standard]>=0.29", "sentence-transformers>=3.0", "numpy>=1.26"]
+
+[tool.setuptools.packages.find]
+include = ["arab_prompts*"]
+
+[tool.setuptools.package-data]
+arab_prompts = ["data/prompts.json"]
