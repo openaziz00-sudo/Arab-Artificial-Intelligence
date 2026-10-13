@@ -5,6 +5,11 @@ import json, re, subprocess
 from scrapling import Selector
 
 ROOT = Path(__file__).parent
+# Retain extension records when regenerating the original 300-entry base.
+catalog_path = ROOT / 'prompts.json'
+preserved = []
+if catalog_path.exists():
+    preserved = [p for p in json.loads(catalog_path.read_text(encoding='utf-8')).get('prompts', []) if p.get('id', 0) > 300]
 source = Path('/home/ubuntu/upload/aiالعرب.html').read_text(encoding='utf-8')
 doc = Selector(source)
 assert 'مكتبة البرومبتات العربية' in (doc.css('title::text').get() or '')
@@ -66,9 +71,14 @@ for key,(label,role,tasks) in categories.items():
           'settings':'الحرارة 0.5؛ عدّلها حسب الحاجة، وأرفق سياقًا موثوقًا.',
           'example':f'المخرج المتوقع: مسودة أولى واضحة لـ«{title}» مع مواضع البيانات التي تحتاج إلى تعبئة.',
           'tip':'استبدل ما بين الأقواس ببياناتك، وراجع الحقائق والأرقام قبل النشر.'})
-# Keep exactly 20 prompts per category, preserving supplied examples and filling the remainder.
+# Keep exactly 20 prompts per category in the original base, preserving supplied examples and filling the remainder.
 assert len(records)==300, (len(records), {k:sum(x['category']==k for x in records) for k in categories})
 for key in categories: assert sum(x['category']==key for x in records)==20, key
 for i,x in enumerate(records,1): x['id']=i
-(ROOT/'prompts.json').write_text(json.dumps({'categories':labels,'prompts':records},ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+if preserved:
+    ids = {x['id'] for x in records}
+    if len({x['id'] for x in preserved}) != len(preserved) or ids.intersection(x['id'] for x in preserved):
+        raise ValueError('Extension records contain duplicate or conflicting IDs; refusing to overwrite.')
+    records.extend(preserved)
+catalog_path.write_text(json.dumps({'categories':labels,'prompts':records},ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
 print('Built',len(records),'prompts across',len(labels),'categories; parsed',len(seed),'provided examples with Scrapling',__import__('scrapling').__version__)
