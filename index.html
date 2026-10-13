@@ -4,7 +4,11 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>ai العرب — مكتبة البرومبتات العربية</title>
 <meta name="description" content="اكتشف 1650 برومبت عربي للتسويق والكتابة والتصميم والتعليم والبرمجة وغيرها. ابحث، خصّص، انسخ، واحفظ المفضلة مجانًا.">
+<<<<<<< HEAD
 <meta name="theme-color" content="#eef0f8" id="tc"><meta property="og:type" content="website"><meta property="og:title" content="ai العرب — مكتبة البرومبتات العربية"><meta property="og:description" content="1650 برومبت عربي عملي للكتابة والتسويق والصور والتعلم والعمل.">
+=======
+<link rel="icon" href="icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="icon.svg"><link rel="manifest" href="manifest.webmanifest"><link rel="canonical" href="https://openaziz00-sudo.github.io/Arab-Artificial-Intelligence/"><meta property="og:url" content="https://openaziz00-sudo.github.io/Arab-Artificial-Intelligence/"><meta property="og:image" content="https://openaziz00-sudo.github.io/Arab-Artificial-Intelligence/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:locale" content="ar_AR"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://openaziz00-sudo.github.io/Arab-Artificial-Intelligence/og.png"><meta name="theme-color" content="#eef0f8" id="tc"><meta property="og:type" content="website"><meta property="og:title" content="ai العرب — مكتبة البرومبتات العربية"><meta property="og:description" content="1650 برومبت عربي عملي للكتابة والتسويق والصور والتعلم والعمل.">
+>>>>>>> 541b118 (feat: refresh Arabic prompt library design and search)
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Reem+Kufi:wght@500;700&display=swap" rel="stylesheet">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"ai العرب","inLanguage":"ar","description":"مكتبة عربية تضم 1650 برومبت عملي للذكاء الاصطناعي."}</script>
 <style>
@@ -176,10 +180,23 @@ async function copy(t){try{await navigator.clipboard.writeText(t)}catch{const a=
 function setTheme(d){root.dataset.theme=d?'dark':'light';$('#theme').textContent=d?'☀':'☾';$('#tc').content=d?'#07080f':'#eef0f8'}
 setTheme((localStorage.getItem('arab-ai-theme')||'dark')==='dark');
 $('#theme').onclick=()=>{const d=root.dataset.theme!=='dark';setTheme(d);localStorage.setItem('arab-ai-theme',d?'dark':'light')};
+<<<<<<< HEAD
 const rows=()=>{const q=norm(st.q).trim().split(/\s+/).filter(Boolean);return catalog.filter(p=>(st.cat==='all'||p.category===st.cat)&&(!st.favs||favs.has(p.id))&&q.every(w=>p._s.includes(w)))};
 function chips(){const n={};catalog.forEach(p=>n[p.category]=(n[p.category]||0)+1);$('#chips').innerHTML=`<button class="chip ${st.cat==='all'?'on':''}" data-c="all">الكل<small>${catalog.length}</small></button>`+Object.entries(cats).map(([k,v])=>`<button class="chip ${st.cat===k?'on':''}" data-c="${esc(k)}">${esc(v)}<small>${n[k]||0}</small></button>`).join('')}
 function card(p,i){const f=favs.has(p.id);return`<article class="card" style="--h:${hue[p.category]};animation-delay:${Math.min(i%PAGE,12)*25}ms"><div class="ct"><span class="tag"><i style="--h:${hue[p.category]}"></i>${esc(cats[p.category])}</span><button class="fav ${f?'on':''}" data-fav="${p.id}" aria-pressed="${f}" aria-label="${f?'إزالة من المفضلة':'إضافة إلى المفضلة'}" type="button">${f?'★':'☆'}</button></div><h3><button class="lnk" data-open="${p.id}" type="button">${esc(p.title)}</button></h3><p class="sum">${esc(p.summary)}</p><div class="pv">${hl(esc(p.prompt))}</div><div class="cf"><button class="btn pri" data-copy="${p.id}" type="button">نسخ البرومبت</button><button class="btn" data-open="${p.id}" type="button">تخصيص</button></div></article>`}
 function render(){chips();const r=rows(),s=r.slice(0,st.shown);$('#count').textContent=`${r.length.toLocaleString('ar-EG')} نتيجة`;$('#range').textContent=r.length?`عرض ${s.length.toLocaleString('ar-EG')}`:'';
+=======
+const SYN=[['بريد','رسال','رسائل','مراسل','ايميل','خطاب'],['رسمي','مهني','رسميه'],['اعلان','اعلانات','اعلاني'],['سيره','cv','ذاتيه'],['صور','صوره','تصميم']].map(g=>g.map(norm));
+const alts=w=>{w=w.replace(/^ال(?=.{3})/,'');const g=SYN.find(g=>g.includes(w));return g||[w]};
+let relaxed=false;
+const rows=()=>{const q=norm(st.q).trim().split(/\s+/).filter(Boolean).map(alts);const base=catalog.filter(p=>(st.cat==='all'||p.category===st.cat)&&(!st.favs||favs.has(p.id)));relaxed=false;
+const hit=(p,g)=>g.some(a=>p._s.includes(a));const strict=base.filter(p=>q.every(g=>hit(p,g)));
+if(strict.length||q.length<2)return strict;
+const sc=base.map(p=>[p,q.filter(g=>hit(p,g)).length]).filter(x=>x[1]).sort((a,b)=>b[1]-a[1]).map(x=>x[0]);relaxed=sc.length>0;return sc};
+function chips(){const n={};catalog.forEach(p=>n[p.category]=(n[p.category]||0)+1);$('#chips').innerHTML=`<button class="chip ${st.cat==='all'?'on':''}" data-c="all">الكل<small>${catalog.length}</small></button>`+Object.entries(cats).map(([k,v])=>`<button class="chip ${st.cat===k?'on':''}" data-c="${esc(k)}">${esc(v)}<small>${n[k]||0}</small></button>`).join('')}
+function card(p,i){const f=favs.has(p.id);return`<article class="card" style="--h:${hue[p.category]};animation-delay:${Math.min(i%PAGE,12)*25}ms"><div class="ct"><span class="tag"><i style="--h:${hue[p.category]}"></i>${esc(cats[p.category])}</span><button class="fav ${f?'on':''}" data-fav="${p.id}" aria-pressed="${f}" aria-label="${f?'إزالة من المفضلة':'إضافة إلى المفضلة'}: ${esc(p.title)}" type="button">${f?'★':'☆'}</button></div><h3><button class="lnk" data-open="${p.id}" type="button">${esc(p.title)}</button></h3><p class="sum">${esc(p.summary)}</p><div class="pv">${hl(esc(p.prompt))}</div><div class="cf"><button class="btn pri" data-copy="${p.id}" aria-label="نسخ برومبت ${esc(p.title)}" type="button">نسخ البرومبت</button><button class="btn" data-open="${p.id}" aria-label="تخصيص برومبت ${esc(p.title)}" type="button">تخصيص</button></div></article>`}
+function render(){chips();const r=rows(),s=r.slice(0,st.shown);$('#count').textContent=`${r.length.toLocaleString('ar-EG')} نتيجة${relaxed?' قريبة من بحثك':''}`;$('#range').textContent=r.length?`عرض ${s.length.toLocaleString('ar-EG')}`:'';
+>>>>>>> 541b118 (feat: refresh Arabic prompt library design and search)
 $('#grid').innerHTML=s.length?s.map(card).join(''):`<div class="empty"><b>${st.favs&&!favs.size?'لم تحفظ أي برومبت بعد':'لا توجد نتائج مطابقة'}</b>${st.favs&&!favs.size?'اضغط ☆ على أي بطاقة لتجدها هنا.':'جرّب كلمات أخرى أو أزل بعض الفلاتر.'}</div>`;
 $('#more').hidden=s.length>=r.length;$('#favN').textContent=favs.size;$('#favT').textContent=st.favs?'★ عرض الكل':'☆ المفضلة';$('#favT').classList.toggle('on',st.favs)}
 const reset=()=>{st.shown=PAGE;render()};
