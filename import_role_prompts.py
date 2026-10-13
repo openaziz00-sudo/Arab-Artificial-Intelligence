@@ -56,6 +56,8 @@ def make_title(act: str, prompt: str) -> str:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("source", type=Path, help="JSON array of objects with act and prompt fields")
+    parser.add_argument("--category", help="Import all records into this existing or new category key")
+    parser.add_argument("--category-label", help="Arabic display label when creating a new category")
     args = parser.parse_args()
     incoming = json.loads(args.source.read_text(encoding="utf-8"))
     if not isinstance(incoming, list):
@@ -64,6 +66,13 @@ def main() -> None:
         raise ValueError("Every source record must have non-empty string fields: act and prompt")
 
     data = json.loads(CATALOG.read_text(encoding="utf-8"))
+    if args.category:
+        if args.category not in data["categories"]:
+            if not args.category_label:
+                raise ValueError("--category-label is required when creating a category")
+            data["categories"][args.category] = args.category_label
+        elif args.category_label and data["categories"][args.category] != args.category_label:
+            raise ValueError("Category already exists with a different label")
     existing = data["prompts"]
     existing_prompts = {p["prompt"].strip() for p in existing}
     existing_titles = {p["title"].strip().casefold() for p in existing}
@@ -71,11 +80,11 @@ def main() -> None:
     additions = []
     for item in incoming:
         act, source_prompt = item["act"].strip(), item["prompt"].strip()
-        prompt = f"تصرّف بصفتك {act}. {source_prompt}"
+        prompt = source_prompt if args.category else f"تصرّف بصفتك {act}. {source_prompt}"
         if source_prompt in seen_source or prompt in existing_prompts:
             continue
         seen_source.add(source_prompt)
-        title = make_title(act, source_prompt)
+        title = act if args.category else make_title(act, source_prompt)
         if title.casefold() in existing_titles:
             title = f"{title} — {act}"
         suffix = 2
@@ -84,7 +93,7 @@ def main() -> None:
             title = f"{base_title} ({suffix})"
             suffix += 1
         existing_titles.add(title.casefold())
-        category = classify(act, source_prompt)
+        category = args.category or classify(act, source_prompt)
         additions.append({
             "category": category,
             "title": title,
