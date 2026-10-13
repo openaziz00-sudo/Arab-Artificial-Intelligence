@@ -14,9 +14,9 @@ keywords = ["arabic", "prompts", "ai", "semantic-search"]
 classifiers = ["Programming Language :: Python :: 3", "License :: OSI Approved :: MIT License"]
 
 [project.optional-dependencies]
-api = ["fastapi>=0.110", "uvicorn[standard]>=0.29"]
+api = ["fastapi>=0.110", "uvicorn[standard]>=0.29", "httpx>=0.27"]
 semantic = ["sentence-transformers>=3.0", "numpy>=1.26"]
-all = ["fastapi>=0.110", "uvicorn[standard]>=0.29", "sentence-transformers>=3.0", "numpy>=1.26"]
+all = ["fastapi>=0.110", "uvicorn[standard]>=0.29", "httpx>=0.27", "sentence-transformers>=3.0", "numpy>=1.26"]
 
 [tool.setuptools.packages.find]
 include = ["arab_prompts*"]

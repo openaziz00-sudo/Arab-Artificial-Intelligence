@@ -19,3 +19,13 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+## Content ownership
+
+The MIT license above applies to the project's source code and accompanying
+software files. The original Arabic prompt texts in `prompts.json` are authored
+and owned by the repository owner. The owner permits commercial and
+non-commercial reuse, copying, modification, and incorporation of those prompt
+texts, provided that attribution to this repository is retained when a
+substantial portion of the catalog is redistributed. Third-party fonts,
+libraries, or other materials remain subject to their own licenses.
