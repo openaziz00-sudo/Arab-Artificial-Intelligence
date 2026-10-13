@@ -1,0 +1,3 @@
+# Dependencies needed by the test suite; semantic model dependencies are not required.
+fastapi>=0.110
+httpx>=0.27
